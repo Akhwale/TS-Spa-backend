@@ -1,0 +1,44 @@
+name: Deploy Laravel App
+
+on:
+  push:
+    branches:
+      - main  # Runs when code is pushed to main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.TS_SPA_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 51.21.162.45 >> ~/.ssh/known_hosts
+
+      - name: Deploy Code to AWS EC2 Instance
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@51.21.162.45 << 'EOF'
+            cd /var/www/TS-Spa-backend   # Adjusted to match your structure
+
+            echo "Pulling latest changes..."
+            git pull origin main
+            
+            echo "Installing dependencies..."
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+            
+            echo "Running migrations..."
+            php artisan migrate --force
+            
+            echo "Setting correct permissions..."
+            chmod -R 775 storage bootstrap/cache
+            chown -R www-data:www-data /var/www/TS-Spa-backend
+
+            echo "Restarting services..."
+            sudo systemctl restart php8.4-fpm
+            sudo systemctl restart nginx
+          EOF
