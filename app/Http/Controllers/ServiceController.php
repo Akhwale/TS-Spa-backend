@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -10,6 +11,15 @@ class ServiceController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function getServicesByCategory()
+    {
+        $categories = Category::with('services')->get();
+
+        return response()->json($categories);
+    }
+
+
+
     public function getServices()
     {
         $services = Service::all();

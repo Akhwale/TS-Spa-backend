@@ -16,11 +16,19 @@ Route::get('/', function () {
 });
 
 
+Route::get('/appo', function () {
+    return view('appointmentBooked');
+});
+
+
+
 Route::get('/categories', [CategoryController::class, 'getCategories']);
 
 Route::get('/staff', [StaffController::class, 'getStaff']);
 
 Route::get('/services', [ServiceController::class, 'getServices']);
+
+Route::get('/servicebyCategory', [ServiceController::class, 'getServicesByCategory']);
 
 Route::get('/displayServices', [ServiceController::class, 'displayServices']);
 

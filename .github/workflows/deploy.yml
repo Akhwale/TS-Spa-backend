@@ -18,12 +18,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.TS_SPA_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 51.21.162.45 >> ~/.ssh/known_hosts
+          ssh-keyscan -H ts-spa.duckdns.org >> ~/.ssh/known_hosts
 
       - name: Deploy Code to AWS EC2 Instance
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@51.21.162.45 << 'EOF'
-            cd /var/www/TS-Spa-backend   # Adjusted to match your structure
+          ssh -o StrictHostKeyChecking=no ubuntu@ts-spa.duckdns.org << 'EOF'
+            cd /var/www/TS-Spa-backend  # Ensure this matches your Laravel project path
 
             echo "Pulling latest changes..."
             git pull origin main
