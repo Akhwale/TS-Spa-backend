@@ -19,3 +19,5 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 
+// Fetching clients (authenticated users only)
+Route::get('/clients', [AuthController::class, 'getClients']);

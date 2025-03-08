@@ -7,6 +7,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\DashboardController;
 
 
 
@@ -16,10 +17,8 @@ Route::get('/', function () {
 });
 
 
-Route::get('/appo', function () {
-    return view('appointmentBooked');
-});
 
+Route::get('/dashboard/data', [DashboardController::class, 'getDashboardData']);
 
 
 Route::get('/categories', [CategoryController::class, 'getCategories']);

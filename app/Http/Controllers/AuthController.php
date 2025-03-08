@@ -26,6 +26,7 @@ class AuthController extends Controller
                 'name' => $validated['name'],
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
+                'role' => 'user',
                 
             ]);
 
@@ -35,7 +36,7 @@ class AuthController extends Controller
                 'data' => [
                     'name' => $user->name,
                     'email' => $user->email,
-                     // Optional: Add any other user data you want to return
+                    'role' => $user->role,
                 ],
             ], 201);
 
@@ -79,6 +80,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'token' => $token,
+                'role' => $user->role
             ],
         ]);
     }
@@ -135,5 +137,15 @@ class AuthController extends Controller
             ], 422);
         }
     }
+
+  
+    public function getClients()
+    {
+        $clients = User::paginate(10); // No need for all()
+        return response()->json($clients);
+    }
+
+
+
 
 }

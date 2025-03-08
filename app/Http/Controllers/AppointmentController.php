@@ -25,23 +25,23 @@ class AppointmentController extends Controller
     
     // This is for a single user
 
-     public function getAppointments($userId)
-    {
-        // Fetch appointments for the specific user, with their associated services
-        $appointments = Appointment::where('user_id', $userId)  // Filter by user_id
-            ->with('services:id,name')  // Select only id and name of services
-            ->get()
-            ->map(function($appointment) {
-                return [
-                    'date' => $appointment->date,
-                    'time' => $appointment->time,
-                    'services' => $appointment->services->pluck('name')  // Extract only service names
-                ];
-            });
+    public function getAppointments($userId)
+{
+    // Fetch paginated appointments with related services
+    $appointments = Appointment::where('user_id', $userId)
+        ->with('services:id,name')
+        ->paginate(10)
+        ->through(function ($appointment) {
+            return [
+                'date' => $appointment->date,
+                'time' => $appointment->time,
+                'services' => $appointment->services->pluck('name')
+            ];
+        });
 
-        // Return the data as JSON
-        return response()->json($appointments);
-    }
+    return response()->json($appointments);
+}
+
 
     
     /**
